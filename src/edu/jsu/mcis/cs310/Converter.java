@@ -2,6 +2,12 @@ package edu.jsu.mcis.cs310;
 
 import com.github.cliftonlabs.json_simple.*;
 import com.opencsv.*;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Converter {
     
@@ -79,7 +85,29 @@ public class Converter {
         try {
         
             // INSERT YOUR CODE HERE
-            
+            CSVReader reader = new CSVReader(new StringReader(csvString));
+            List<String[]> full = reader.readAll();
+            //System.out.println(full);
+            Iterator<String[]> iterator = full.iterator();
+            JsonArray records = new JsonArray();
+            if (iterator.hasNext())
+            {
+                String[] headings = iterator.next();
+                while (iterator.hasNext())
+                {
+                    String[] csvRecord = iterator.next();
+                    //JsonObject jsonRecord = new JsonObject();
+                    LinkedHashMap<String, String> jsonRecord = new LinkedHashMap<>();
+                    for (int i = 0; i < headings.length; ++i)
+                    {
+                        jsonRecord.put(headings[i], csvRecord[i]);
+                    }
+                    records.add(jsonRecord);
+                }
+            }
+            String jsonString = Jsoner.serialize(records);
+            System.out.println(jsonString);
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -93,10 +121,54 @@ public class Converter {
     public static String jsonToCsv(String jsonString) {
         
         String result = ""; // default return value; replace later!
-        
+       // JsonArray jsonArray;
         try {
             
             // INSERT YOUR CODE HERE
+            CSVReader reader = new CSVReader(new StringReader(jsonString));
+            //Map<String, String> full = (Map<String, String>) reader.readAll();
+            List<String[]> full = reader.readAll();
+            //Iterator<String[]> iterator = full.iterator();
+            //Map<String, String>> flatJson = JFlat.parseJson(jsonString);
+            JsonArray jsonArray = new JsonArray();
+            //JsonArray docs = jsonArray.getJsonArray("");
+            /*
+            if (iterator.hasNext())
+            {
+                String[] headings = iterator.next();
+                while (iterator.hasNext())
+                {
+                    String[] jsonRecord = iterator.next();
+                    //JsonObject jsonRecord = new JsonObject();
+                    LinkedHashMap<String, String> csvRecord = new LinkedHashMap<>();
+                    for (int i = 0; i < headings.length; ++i)
+                    {
+                        jsonRecord.put(headings[i], csvRecord[i]);
+                    }
+                    records.add(jsonRecord);
+                }
+            }
+           //System.out.println(full);
+            */
+            
+            Iterator<String[]> iterator = full.iterator();
+            String[] line = iterator.next();
+
+            for (String field : line)
+            {
+                if ("ColHeadings".equals(field))
+                {
+                    
+                }
+                //System.out.println(field);
+            }
+            StringWriter writer = new StringWriter();
+            CSVWriter csvwriter = new CSVWriter(writer, ',', '"','\\',"\n");
+            csvwriter.writeNext(line);
+            String csvString = writer.toString();
+            //System.out.println(csvString);
+
+
             
         }
         catch (Exception e) {
